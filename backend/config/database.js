@@ -1,5 +1,5 @@
 module.exports = function (mongoose) {
-    mongoose.set('useFindAndModify', false);
+    
 
     const uri = process.env.CONNECTION_URI || '';
 
