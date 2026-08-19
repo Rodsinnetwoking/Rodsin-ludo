@@ -13,7 +13,14 @@ function App() {
     const [playerSocket, setPlayerSocket] = useState();
     const [redirect, setRedirect] = useState();
     useEffect(() => {
-        const socket = io('https://rodsin-ludo.onrender.com', { withCredentials: true });
+        const authToken = new URLSearchParams(window.location.search).get('auth_token');
+
+const socket = io('https://rodsin-ludo.onrender.com', {
+    withCredentials: true,
+    auth: {
+        token: authToken,
+    },
+});
         socket.on('player:data', data => {
             data = JSON.parse(data);
             setPlayerData(data);
