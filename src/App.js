@@ -12,22 +12,26 @@ function App() {
     const [playerData, setPlayerData] = useState();
     const [playerSocket, setPlayerSocket] = useState();
     const [redirect, setRedirect] = useState();
+
     useEffect(() => {
         const authCode = new URLSearchParams(window.location.search).get('auth_code');
 
-const socket = io('https://rodsin-ludo.onrender.com', {
-    withCredentials: true,
-    auth: auth: {
-    code: authCode,
-},
-});
+        const socket = io('https://rodsin-ludo.onrender.com', {
+            withCredentials: true,
+            auth: {
+                code: authCode,
+            },
+        });
+
         socket.on('player:data', data => {
             data = JSON.parse(data);
             setPlayerData(data);
+
             if (data.roomId != null) {
                 setRedirect(true);
             }
         });
+
         setPlayerSocket(socket);
     }, []);
 
@@ -44,10 +48,18 @@ const socket = io('https://rodsin-ludo.onrender.com', {
                             } else if (playerSocket) {
                                 return <LoginPage />;
                             } else {
-                                return <ReactLoading type='spinningBubbles' color='white' height={667} width={375} />;
+                                return (
+                                    <ReactLoading
+                                        type='spinningBubbles'
+                                        color='white'
+                                        height={667}
+                                        width={375}
+                                    />
+                                );
                             }
                         }}
-                    ></Route>
+                    />
+
                     <Route
                         path='/login'
                         Component={() => {
@@ -56,10 +68,18 @@ const socket = io('https://rodsin-ludo.onrender.com', {
                             } else if (playerSocket) {
                                 return <LoginPage />;
                             } else {
-                                return <ReactLoading type='spinningBubbles' color='white' height={667} width={375} />;
+                                return (
+                                    <ReactLoading
+                                        type='spinningBubbles'
+                                        color='white'
+                                        height={667}
+                                        width={375}
+                                    />
+                                );
                             }
                         }}
-                    ></Route>
+                    />
+
                     <Route
                         path='/game'
                         Component={() => {
@@ -73,7 +93,7 @@ const socket = io('https://rodsin-ludo.onrender.com', {
                                 return <Navigate to='/login' />;
                             }
                         }}
-                    ></Route>
+                    />
                 </Routes>
             </Router>
         </SocketContext.Provider>
