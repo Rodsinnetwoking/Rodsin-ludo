@@ -128,5 +128,4 @@ if (process.env.NODE_ENV === 'production') {
         res.sendFile(path.join(buildPath, 'index.html'));
     });
 }
-
 module.exports = { server };
