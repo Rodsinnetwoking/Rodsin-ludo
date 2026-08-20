@@ -14,7 +14,7 @@ module.exports = function (server) {
         }
     });
     socketManager.getIO().use(wrap(sessionMiddleware));
-    socketManager.getIO().on('connection', socket => {
+    socketManager.getIO().on('connection', async socket => {
         registerPlayerHandlers(socket);
         registerRoomHandlers(socket);
         registerGameHandlers(socket);
