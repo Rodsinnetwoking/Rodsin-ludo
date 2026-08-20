@@ -6,6 +6,9 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 const { sessionMiddleware } = require('./config/session');
 
+// ADD THIS: Import RODSIN Wallet functions
+const { getBalance, deductCoins, awardCoins } = require('./rodsinWallet');
+
 const PORT = process.env.PORT;
 
 const app = express();
@@ -25,6 +28,7 @@ app.use(
     })
 );
 app.use(sessionMiddleware);
+
 app.get('/wordpress-auth', (req, res) => {
     try {
         const { auth_token } = req.query;
@@ -38,7 +42,7 @@ app.get('/wordpress-auth', (req, res) => {
 
         const parts = auth_token.split('.');
 
-        if (parts.length !== 2) {
+        if (parts.length!== 2) {
             return res.status(401).json({
                 success: false,
                 message: 'Invalid authentication token',
@@ -54,12 +58,12 @@ app.get('/wordpress-auth', (req, res) => {
         const crypto = require('crypto');
 
         const expectedSignature = crypto
-            .createHmac('sha256', secret)
-            .update(encodedPayload)
-            .digest('hex');
+           .createHmac('sha256', secret)
+           .update(encodedPayload)
+           .digest('hex');
 
         if (
-            !crypto.timingSafeEqual(
+           !crypto.timingSafeEqual(
                 Buffer.from(receivedSignature),
                 Buffer.from(expectedSignature)
             )
@@ -74,7 +78,7 @@ app.get('/wordpress-auth', (req, res) => {
             Buffer.from(encodedPayload, 'base64').toString('utf8')
         );
 
-        if (!payload.user_id || !payload.expires) {
+        if (!payload.user_id ||!payload.expires) {
             return res.status(401).json({
                 success: false,
                 message: 'Invalid authentication data',
@@ -114,6 +118,26 @@ app.get('/wordpress-auth', (req, res) => {
         });
     }
 });
+
+// ADD THIS: TEST ROUTE TO CHECK RODSIN CONNECTION
+app.get('/test-rodsin', async (req, res) => {
+    const testUserId = 1; // <-- CHANGE THIS TO YOUR WP USER ID
+    
+    console.log("Testing RODSIN API for user:", testUserId);
+    
+    const before = await getBalance(testUserId);
+    const deduct = await deductCoins(testUserId, 1); // deduct 1 coin
+    const after = await getBalance(testUserId);
+    
+    res.json({ 
+        msg: "Check Render Logs too",
+        before, 
+        deduct, 
+        after 
+    });
+});
+
+
 const server = app.listen(PORT);
 
 require('./config/database')(mongoose);
