@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const { COLORS, MOVE_TIME } = require('../utils/constants');
-const { makeRandomMove } = require('../handlers/handlersFunctions');
 const timeoutManager = require('./timeoutManager.js');
 const PawnSchema = require('./pawn');
 const PlayerSchema = require('./player');
@@ -57,7 +56,7 @@ RoomSchema.methods.changeMovingPlayer = function () {
     this.nextMoveTime = Date.now() + MOVE_TIME;
     this.rolledNumber = null;
     timeoutManager.clear(this._id.toString());
-    timeoutManager.set(makeRandomMove, MOVE_TIME, this._id.toString());
+
 };
 
 RoomSchema.methods.movePawn = function (pawn) {
@@ -86,7 +85,6 @@ RoomSchema.methods.startGame = function () {
     this.nextMoveTime = Date.now() + MOVE_TIME;
     this.players.forEach(player => (player.ready = true));
     this.players[0].nowMoving = true;
-    timeoutManager.set(makeRandomMove, MOVE_TIME, this._id.toString());
 };
 
 RoomSchema.methods.endGame = function (winner) {
