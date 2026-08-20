@@ -1,5 +1,5 @@
 const axios = require('axios');
-constt socketManager = require('../socket/socketManager');
+const socketManager = require('../socket/socketManager');
 const registerPlayerHandlers = require('../handlers/playerHandler');
 const registerRoomHandlers = require('../handlers/roomHandler');
 const registerGameHandlers = require('../handlers/gameHandler');
