@@ -1,18 +1,22 @@
 const session = require('express-session');
 
 const sessionMiddleware = session({
-    credentials: true,
+    secret: process.env.SESSION_SECRET || 'RODSIN-LUDO-SESSION-SECRET-CHANGE-ME',
+    resave: false,
+    saveUninitialized: false,
+
     cookie: {
-        httpOnly: false,
-        secure: false,
+        httpOnly: true,
+        secure: true,
+        sameSite: 'none',
+        maxAge: 24 * 60 * 60 * 1000,
     },
-    secret: 'secret',
-    saveUninitialized: true,
-    resave: true,
-    maxAge: 20000,
 });
 
 const wrap = expressMiddleware => (socket, next) =>
     expressMiddleware(socket.request, {}, next);
 
-module.exports = { sessionMiddleware, wrap };
+module.exports = {
+    sessionMiddleware,
+    wrap,
+};
