@@ -120,10 +120,12 @@ require('./config/database')(mongoose);
 require('./config/socket')(server);
 
 if (process.env.NODE_ENV === 'production') {
-    app.use(express.static('./build'));
+    const buildPath = path.join(__dirname, '../build');
+
+    app.use(express.static(buildPath));
+
     app.get('*', (req, res) => {
-        const indexPath = path.join(__dirname, './build/index.html');
-        res.sendFile(indexPath);
+        res.sendFile(path.join(buildPath, 'index.html'));
     });
 }
 
